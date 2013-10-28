@@ -239,11 +239,11 @@ for cycle in xrange(paso,maxT+1):
             name = nombre + name
             name2 = 'vel' + name
             plt.figure()
-            plt.imshow(rho1.T, cmap=None, norm=None, aspect=None, interpolation=None,alpha=1.0, vmin=None, vmax=None, origin=None, extent=None)
+            #plt.imshow(rho1.T, cmap=None, norm=None, aspect=None, interpolation=None,alpha=1.0, vmin=None, vmax=None, origin=None, extent=None)
             plt.colorbar()
             plt.savefig(name+'tiempo'+str(t)+'.png', dpi=None, facecolor='w', edgecolor='w',orientation='portrait', papertype=None, format='png',transparent=False)
             plt.figure()
-            plt.imshow(u.T, cmap=None, norm=None, aspect=None, interpolation=None,alpha=1.0, vmin=None, vmax=None, origin=None, extent=None)
+            #plt.imshow(u.T, cmap=None, norm=None, aspect=None, interpolation=None,alpha=1.0, vmin=None, vmax=None, origin=None, extent=None)
             plt.colorbar()
             plt.savefig(name2+'.png', dpi=None, facecolor='w', edgecolor='w',orientation='portrait', papertype=None, format='png',transparent=False)
 ##            u = np.zeros([uTotX1.shape[0]*uTotX1.shape[1],3])
