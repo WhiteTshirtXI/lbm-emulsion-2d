@@ -4,7 +4,7 @@ import scipy as sp
 import matplotlib.pyplot as plt
 import findlist
 import circ
-import pyvtk
+import vtk
 import time
 os.system("cls")
 #Nombre archivo para guardar las imagenes
