@@ -237,19 +237,19 @@ for cycle in xrange(paso,maxT+1):
 
         t=t+dt
 
-        print np.min(rho1)
-        print np.max(rho1)
+        #print np.min(rho1)
+        #print np.max(rho1)
         
     ## VISUALIZATION
         if(cycle%itPlot==0):
             print 'iteracion:', cycle
             toc = time.clock()
-            print toc-tic
+            #print toc-tic
             #Calculates Pressure where P=Cs^2(rho1+rho2)+1/Cs^2*G*rho1*rho2  and Cs^2=1/3
             Pin = ((1/3)*np.max(np.max(rho2))+ np.min(np.min(rho2)) + 3*G*np.max(np.max(rho2))*np.min(np.min(rho2)))
             Pout =((1/3)*np.max(np.max(rho1))+ np.min(np.min(rho1)) + 3*G*np.max(np.max(rho1))*np.min(np.min(rho1)))
             deltaP = Pout-Pin
-            print deltaP
+            #print deltaP
             curv = 1/coordinates[1,2]
             u = np.zeros([uTotX1.shape[0],uTotX1.shape[1]])
             u = sp.sqrt(np.multiply(uTotX1,uTotX1)+np.multiply(uTotY1,uTotY1)).reshape(lx+1,ly+1)
@@ -257,14 +257,14 @@ for cycle in xrange(paso,maxT+1):
             name = str(cycle)
             name = nombre + name
             name2 = 'vel' + name
-            plt.figure()
+            #plt.figure()
             #plt.imshow(rho1.T, cmap=None, norm=None, aspect=None, interpolation=None,alpha=1.0, vmin=None, vmax=None, origin=None, extent=None)
-            plt.colorbar()
-            plt.savefig(name+'tiempo'+str(t)+'.png', dpi=None, facecolor='w', edgecolor='w',orientation='portrait', papertype=None, format='png',transparent=False)
-            plt.figure()
+            #plt.colorbar()
+            #plt.savefig(name+'tiempo'+str(t)+'.png', dpi=None, facecolor='w', edgecolor='w',orientation='portrait', papertype=None, format='png',transparent=False)
+            #plt.figure()
             #plt.imshow(u.T, cmap=None, norm=None, aspect=None, interpolation=None,alpha=1.0, vmin=None, vmax=None, origin=None, extent=None)
-            plt.colorbar()
-            plt.savefig(name2+'.png', dpi=None, facecolor='w', edgecolor='w',orientation='portrait', papertype=None, format='png',transparent=False)
+            #plt.colorbar()
+            #plt.savefig(name2+'.png', dpi=None, facecolor='w', edgecolor='w',orientation='portrait', papertype=None, format='png',transparent=False)
 ##            u = np.zeros([uTotX1.shape[0]*uTotX1.shape[1],3])
 ##            u[:,0]=uTotX1.reshape((lx+1)*(ly+1))
 ##            u[:,1]=uTotY1.reshape((lx+1)*(ly+1))
