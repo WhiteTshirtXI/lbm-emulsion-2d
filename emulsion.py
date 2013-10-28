@@ -6,6 +6,7 @@ import findlist
 import circ
 import vtk
 import time
+
 os.system('cls' if os.name=='nt' else 'clear')
 #Nombre archivo para guardar las imagenes
 nombre = 'Cortante_lamda3.5_vel0.5_sep28'
@@ -113,10 +114,8 @@ gIn= np.zeros([9,lx+1,ly+1])
 ##    fIn[i,:,:] = tNS[0,i]*(1.0 + delta_rho)
 ##    gIn[i,:,:] = tNS[0,i]*(1.0 - delta_rho)
 
-# Calculates density distribution
-for i in xrange(9):
-    cuNS1 = 3*(cxNS[0,i]*jx1+cyNS[0,i]*jy1)
-    cuNS2 = 3*(cxNS[0,i]*jx2+cyNS[0,i]*jy2)
+
+def to_convert_to_cuda(lx, ly, numdrops, x, obst_x, y, obst_y, obst_r, fIn, gIn, rho2_0, tNS, cuNS2, jx2, jy2, rho1_0, cuNS1, jx1, jy1):
     for j in xrange(lx+1):
         for k in xrange(ly+1):
             t = 0
@@ -129,6 +128,13 @@ for i in xrange(9):
                     fIn[i,j,k] = rho1_0*tNS[0,i]*( 1 + cuNS1[j,k] + 1./2*(cuNS1[j,k]*cuNS1[j,k])-(3./2)*(jx1[j,k]**2+jy1[j,k]**2))
                     gIn[i,j,k] = 0
                     t = t+1
+
+
+# Calculates density distribution
+for i in xrange(9):
+    cuNS1 = 3*(cxNS[0,i]*jx1+cyNS[0,i]*jy1)
+    cuNS2 = 3*(cxNS[0,i]*jx2+cyNS[0,i]*jy2)
+    to_convert_to_cuda(lx, ly, numdrops, x, obst_x, y, obst_y, obst_r, fIn, gIn, rho2_0, tNS, cuNS2, jx2, jy2, rho1_0, cuNS1, jx1, jy1)
 
 t = 0
 ## MAIN LOOP (TIME CYCLES)
