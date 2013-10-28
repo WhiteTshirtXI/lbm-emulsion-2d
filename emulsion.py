@@ -1,4 +1,5 @@
 import os
+from numbapro import cuda
 import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
@@ -115,26 +116,38 @@ gIn= np.zeros([9,lx+1,ly+1])
 ##    gIn[i,:,:] = tNS[0,i]*(1.0 - delta_rho)
 
 
+@cuda.autojit
 def to_convert_to_cuda(lx, ly, numdrops, x, obst_x, y, obst_y, obst_r, fIn, gIn, rho2_0, tNS, cuNS2, jx2, jy2, rho1_0, cuNS1, jx1, jy1):
-    for j in xrange(lx+1):
-        for k in xrange(ly+1):
-            t = 0
-            for z in xrange(numdrops):
-                if (abs((x[j,k]-obst_x[z]))**2+abs((y[j,k]-obst_y[z]))**2)<((obst_r[z])**2) or (abs((x[j,k]-obst_x[z]))**2+abs((y[j,k]-obst_y[z]))**2)==((obst_r[z])**2):
-                    fIn[i,j,k] = 0
-                    gIn[i,j,k] = rho2_0*tNS[0,i]*(1 + cuNS2[j,k]+(1./2)*(cuNS2[j,k]*cuNS2[j,k])-(3./2)*(jx2[j,k]**2+jy2[j,k]**2))
-                    t = t+1
-                elif (abs((x[j,k]-obst_x[z]))**2+abs((y[j,k]-obst_y[z]))**2) > ((obst_r[z])**2) and (t<1):
-                    fIn[i,j,k] = rho1_0*tNS[0,i]*( 1 + cuNS1[j,k] + 1./2*(cuNS1[j,k]*cuNS1[j,k])-(3./2)*(jx1[j,k]**2+jy1[j,k]**2))
-                    gIn[i,j,k] = 0
-                    t = t+1
+
+
+    j, k = cuda.grid(2);
+	
+    if j < lx+1 and k < ly+1:
+	    t = 0
+	    for z in xrange(numdrops):
+		obst_x[z, 0]
+		obst_y[z, 0]
+		obst_r[z, 0]
+		val = (x[j,k] - obst_x[z, 0])*(x[j,k] - obst_x[z,0]) + (y[j,k] - obst_y[z, 0])*(y[j,k] - obst_y[z, 0]);
+		ref = obst_r[z, 0]*obst_r[z,0];
+		if val <= ref:
+		    fIn[i,j,k] = 0
+		    gIn[i,j,k] = rho2_0*tNS[0,i]*(1 + cuNS2[j,k]+(1./2)*(cuNS2[j,k]*cuNS2[j,k])-(3./2)*(jx2[j,k]*jx2[j,k]+jy2[j,k]*jy2[j,k]))
+		    t = t+1
+		elif val > ref and (t<1):
+		    fIn[i,j,k] = rho1_0*tNS[0,i]*( 1 + cuNS1[j,k] + 1./2*(cuNS1[j,k]*cuNS1[j,k])-(3./2)*(jx1[j,k]*jx1[j,k]+jy1[j,k]*jy1[j,k]))
+		    gIn[i,j,k] = 0
+		    t = t+1
 
 
 # Calculates density distribution
 for i in xrange(9):
     cuNS1 = 3*(cxNS[0,i]*jx1+cyNS[0,i]*jy1)
     cuNS2 = 3*(cxNS[0,i]*jx2+cyNS[0,i]*jy2)
-    to_convert_to_cuda(lx, ly, numdrops, x, obst_x, y, obst_y, obst_r, fIn, gIn, rho2_0, tNS, cuNS2, jx2, jy2, rho1_0, cuNS1, jx1, jy1)
+    
+    griddim = 9, 9
+    blockdim = 12, 12 
+    to_convert_to_cuda[griddim, blockdim](lx, ly, numdrops, x, obst_x, y, obst_y, obst_r, fIn, gIn, rho2_0, tNS, cuNS2, jx2, jy2, rho1_0, cuNS1, jx1, jy1)
 
 t = 0
 ## MAIN LOOP (TIME CYCLES)
