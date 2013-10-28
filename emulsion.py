@@ -6,7 +6,7 @@ import findlist
 import circ
 import vtk
 import time
-os.system("cls")
+os.system('cls' if os.name=='nt' else 'clear')
 #Nombre archivo para guardar las imagenes
 nombre = 'Cortante_lamda3.5_vel0.5_sep28'
 #Numero de iteraciones
